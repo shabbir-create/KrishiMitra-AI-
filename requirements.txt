@@ -1,0 +1,15 @@
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+pillow>=10.0
+numpy>=1.26
+tensorflow>=2.15,<2.20
+streamlit>=1.38
+requests>=2.32
+gTTS>=2.5
+python-dotenv>=1.0
+SQLAlchemy>=2.0
+PyMySQL>=1.1
+requests
+python-dotenv
+edge-tts

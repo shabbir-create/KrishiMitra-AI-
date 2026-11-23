@@ -1,0 +1,32 @@
+[
+  {
+    "keywords": [
+      "पीले पत्ते",
+      "पत्ती पीली",
+      "पत्ते पीले",
+      "yellow leaves"
+    ],
+    "answer_hi": "पत्तियों का पीला होना पानी की कमी या अधिकता, पोषक तत्वों की कमी, कीट या रोग के कारण हो सकता है। देखें कि समस्या नई पत्तियों में है या पुरानी में, मिट्टी में नमी कैसी है और पत्तियों के नीचे कीट तो नहीं हैं। साफ फोटो लेकर स्थानीय कृषि विशेषज्ञ या KVK से पुष्टि करें।",
+    "answer_en": "Yellow leaves can result from water stress, nutrient issues, pests or disease. Check soil moisture and both sides of leaves, then seek local KVK confirmation."
+  },
+  {
+    "keywords": [
+      "गेहूं",
+      "बुवाई",
+      "wheat",
+      "sowing"
+    ],
+    "answer_hi": "गेहूं की बुवाई का सही समय क्षेत्र, किस्म, सिंचाई और मौसम पर निर्भर करता है। अपने जिले के लिए नवीनतम KVK या कृषि विश्वविद्यालय की सलाह देखें।",
+    "answer_en": "Wheat sowing time depends on region, variety, irrigation and weather. Follow the latest district-specific KVK or agricultural university guidance."
+  },
+  {
+    "keywords": [
+      "खाद",
+      "उर्वरक",
+      "fertilizer",
+      "टमाटर"
+    ],
+    "answer_hi": "उर्वरक की सही मात्रा मिट्टी की जांच, फसल की अवस्था और स्थानीय सिफारिश पर निर्भर करती है। मिट्टी परीक्षण के बिना निश्चित मात्रा बताना उचित नहीं होगा।",
+    "answer_en": "Fertilizer rates depend on soil test, crop stage and local recommendations. Avoid fixed doses without a soil test."
+  }
+]
