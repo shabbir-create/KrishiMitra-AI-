@@ -14,6 +14,8 @@ Features:
 """
 
 import os
+import re
+import unicodedata
 import json
 from pathlib import Path
 
@@ -205,61 +207,19 @@ def faq_fallback(
     Search local FAQ if OpenRouter is unavailable.
     """
 
-    question_lower = (
-        str(question)
-        .strip()
-        .lower()
-    )
-
-    entries = load_faq()
-
-
-    for entry in entries:
-
-        if not isinstance(entry, dict):
-            continue
-
-
-        keywords = entry.get(
-            "keywords",
-            []
-        )
-
-
-        for keyword in keywords:
-
-            keyword_text = (
-                str(keyword)
-                .strip()
-                .lower()
-            )
-
-
-            if (
-                keyword_text
-                and keyword_text in question_lower
-            ):
-
-                if (
-                    str(language)
-                    .lower()
-                    .startswith("hi")
-                ):
-
-                    return (
-                        entry.get("answer_hi")
-                        or entry.get("answer_en")
-                    )
-
-                else:
-
-                    return (
-                        entry.get("answer_en")
-                        or entry.get("answer_hi")
-                    )
-
-
-    return None
+    normalized = " ".join(unicodedata.normalize("NFC", question).casefold().split())
+    best_answer = None
+    best_length = 0
+    field = "answer_hi" if language.lower().startswith("hi") else "answer_en"
+    for entry in load_faq():
+        for keyword in entry["keywords"]:
+            phrase = unicodedata.normalize("NFC", keyword).casefold()
+            if len(phrase) <= best_length:
+                continue
+            if re.search(r"(?<!\w)" + re.escape(phrase) + r"(?!\w)", normalized):
+                best_answer = entry[field]
+                best_length = len(phrase)
+    return best_answer
 
 
 # ============================================================
@@ -440,7 +400,7 @@ Farmer Question:
     )
 
 
-    if not answer:
+    if not isinstance(answer, str) or not answer.strip():
 
         raise RuntimeError(
             "OpenRouter returned an empty answer."
@@ -531,82 +491,23 @@ def answer_question(
     # TRY OPENROUTER
     # ========================================================
 
-    try:
-
-        ai_answer = ask_openrouter(
-
-            question=question,
-
-            language=language
-
-        )
-
-
-        return {
-
-            "intent":
-                "ai_agriculture",
-
-            "answer":
-                ai_answer,
-
-            "source":
-                "openrouter",
-
-            "model":
-                openrouter_model()
-
-        }
-
-
-    except requests.exceptions.Timeout:
-
-        print(
-            "OpenRouter Error: Request timeout"
-        )
-
-
-    except requests.exceptions.HTTPError as error:
-
-        print(
-            "OpenRouter HTTP Error:",
-            error
-        )
-
-
-        # Optional useful debugging
-
+    provider_status = "not_configured"
+    if os.getenv("OPENROUTER_API_KEY", "").strip():
         try:
-
-            print(
-                "OpenRouter response:",
-                error.response.text
-            )
-
-        except Exception:
-
-            pass
-
-
-    except requests.exceptions.RequestException as error:
-
-        print(
-            "OpenRouter Request Error:",
-            error
-        )
-
-
-    except Exception as error:
-
-        print(
-            "OpenRouter Error:",
-            error
-        )
-
-
-    # ========================================================
-    # LOCAL FAQ FALLBACK
-    # ========================================================
+            ai_answer = ask_openrouter(question=question, language=language)
+            return {
+                "intent": "ai_agriculture",
+                "answer": ai_answer,
+                "source": "openrouter",
+                "model": openrouter_model(),
+            }
+        except requests.HTTPError as exc:
+            status = exc.response.status_code if exc.response is not None else None
+            print("OpenRouter returned HTTP", status)
+            provider_status = "provider_error"
+        except (requests.RequestException, RuntimeError, ValueError, TypeError, AttributeError) as exc:
+            print("OpenRouter request failed:", type(exc).__name__)
+            provider_status = "provider_error"
 
     local_answer = faq_fallback(
 
@@ -628,7 +529,8 @@ def answer_question(
                 local_answer,
 
             "source":
-                "local_faq"
+                "local_faq",
+            "provider_status": provider_status,
 
         }
 
@@ -637,38 +539,15 @@ def answer_question(
     # FINAL FALLBACK
     # ========================================================
 
-    if hindi:
-
-        fallback_answer = (
-            "अभी AI सहायक से संपर्क नहीं हो पा रहा है। "
-            "कृपया फसल का नाम, दिखाई देने वाले लक्षण और "
-            "समस्या कितने दिनों से है यह बताएं। "
-            "यदि पत्तों में रोग के लक्षण हैं तो Disease Detection "
-            "में पत्ते की साफ फोटो अपलोड करें।"
-        )
-
-    else:
-
-        fallback_answer = (
-            "The AI assistant is currently unavailable. "
-            "Please provide the crop name, visible symptoms "
-            "and how long the problem has been present. "
-            "If the leaf shows disease symptoms, you can also "
-            "upload a clear image using Disease Detection."
-        )
-
-
     return {
-
-        "intent":
-            "fallback",
-
-        "answer":
-            fallback_answer,
-
-        "source":
-            "local"
-
+        "intent": "topic_uncovered",
+        "source": "local",
+        "provider_status": provider_status,
+        "answer": (
+            "इस सवाल के लिए अंतर्निहित मार्गदर्शिका में जानकारी नहीं है। आप सिंचाई, पीली पत्तियों, पछेती झुलसा, मिट्टी की सेहत या खाद के बारे में पूछ सकते हैं।"
+            if hindi else
+            "The built-in guide doesn’t cover this question. It can help with irrigation, yellowing leaves, late blight, soil health and fertilizer. Choose a sample question or ask about one of those topics."
+        ),
     }
 
 

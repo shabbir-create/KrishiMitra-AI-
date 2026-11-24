@@ -1592,7 +1592,7 @@ def show_farmer_assistant():
     if backend_online:
         render(
             '<div class="status-box status-online">'
-            '🟢 Agricultural Assistant Connected'
+            '🟢 Farmer Assistant backend connected'
             '</div>'
         )
     else:
@@ -1690,7 +1690,8 @@ def show_farmer_assistant():
                         st.session_state.chat_history.append(
                             {
                                 "role": "assistant",
-                                "content": answer
+                                "content": answer,
+                                "source": data.get("source"),
                             }
                         )
 
@@ -1734,11 +1735,16 @@ def show_farmer_assistant():
                     # Convert the assistant's simple Markdown-style response
                     # into safe, readable HTML.
                     content = format_assistant_response(raw_content)
+                    source_label = {
+                        "openrouter": "OpenRouter AI",
+                        "local_faq": "Built-in farming guide",
+                        "local": "Built-in farming guide",
+                    }.get(message.get("source"), "KrishiMitra Assistant")
 
                     render(
                         '<div class="chat-message chat-assistant">'
                         '<div class="chat-role">'
-                        '🌱 KrishiMitra Assistant'
+                        f'🌱 {source_label}'
                         '</div>'
                         f'{content}'
                         '</div>'
@@ -1757,6 +1763,12 @@ def show_farmer_assistant():
         st.markdown("### 💡 Example Farming Questions")
 
         examples = [
+            "मेरे टमाटर की पत्तियाँ पीली क्यों हो रही हैं?",
+            "गेहूँ की सिंचाई कब करनी चाहिए?",
+            "पछेती झुलसा के लक्षण क्या हैं?",
+            "फफूंद रोगों से बचाव कैसे करें?",
+            "मिट्टी की सेहत कैसे सुधारें?",
+        ] if language_code == "hi" else [
             "Why are my tomato leaves turning yellow?",
             "How should I irrigate wheat?",
             "What are the symptoms of late blight?",

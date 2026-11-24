@@ -4,17 +4,15 @@
       "पीले पत्ते",
       "पत्ती पीली",
       "पत्ते पीले",
-      "yellow leaves"
+      "yellow leaves", "yellowing leaves", "leaves turning yellow", "leaves are turning yellow", "leaves are yellow", "पत्तियां पीली", "पत्तियाँ पीली"
     ],
     "answer_hi": "पत्तियों का पीला होना पानी की कमी या अधिकता, पोषक तत्वों की कमी, कीट या रोग के कारण हो सकता है। देखें कि समस्या नई पत्तियों में है या पुरानी में, मिट्टी में नमी कैसी है और पत्तियों के नीचे कीट तो नहीं हैं। साफ फोटो लेकर स्थानीय कृषि विशेषज्ञ या KVK से पुष्टि करें।",
     "answer_en": "Yellow leaves can result from water stress, nutrient issues, pests or disease. Check soil moisture and both sides of leaves, then seek local KVK confirmation."
   },
   {
     "keywords": [
-      "गेहूं",
-      "बुवाई",
-      "wheat",
-      "sowing"
+      "गेहूं की बुवाई", "गेहूँ की बुआई", "गेहूं कब बोएं", "गेहूँ कब बोएँ",
+      "sow wheat", "plant wheat", "wheat sowing", "sowing wheat", "wheat planting"
     ],
     "answer_hi": "गेहूं की बुवाई का सही समय क्षेत्र, किस्म, सिंचाई और मौसम पर निर्भर करता है। अपने जिले के लिए नवीनतम KVK या कृषि विश्वविद्यालय की सलाह देखें।",
     "answer_en": "Wheat sowing time depends on region, variety, irrigation and weather. Follow the latest district-specific KVK or agricultural university guidance."
@@ -23,10 +21,34 @@
     "keywords": [
       "खाद",
       "उर्वरक",
-      "fertilizer",
-      "टमाटर"
+      "fertilizer", "fertiliser", "fertilizers", "fertilisers"
     ],
     "answer_hi": "उर्वरक की सही मात्रा मिट्टी की जांच, फसल की अवस्था और स्थानीय सिफारिश पर निर्भर करती है। मिट्टी परीक्षण के बिना निश्चित मात्रा बताना उचित नहीं होगा।",
     "answer_en": "Fertilizer rates depend on soil test, crop stage and local recommendations. Avoid fixed doses without a soil test."
+  },
+  {
+    "keywords": ["irrigate", "irrigation", "watering", "water wheat", "water my", "water the crop", "सिंचाई", "सिंचाइ", "पानी कब", "पानी देना"],
+    "answer_en": "Check moisture in the root zone at several spots before irrigating. If it is still moist, check again later. When planning the next irrigation, account for recent rain, soil type and the crop’s growth stage. For a wheat irrigation schedule, use your district advisory for the current stage.",
+    "answer_hi": "सिंचाई से पहले खेत में कई जगह जड़ों की गहराई पर मिट्टी की नमी जाँचें। अगर वहाँ नमी है तो बाद में फिर जाँचें। अगली सिंचाई तय करते समय हाल की बारिश, मिट्टी का प्रकार और फसल की अवस्था देखें। गेहूँ के लिए अपने जिले की अवस्था-वार सिंचाई सलाह अपनाएँ।"
+  },
+  {
+    "keywords": ["late blight", "पछेती झुलसा", "पछेता झुलसा", "पछेती अंगमारी"],
+    "answer_en": "On potatoes or tomatoes, look for water-soaked patches that enlarge quickly, especially in cool, damp weather. Check stems as well as leaves. If patches are spreading, contact a local crop adviser promptly for identification before choosing treatment.",
+    "answer_hi": "आलू या टमाटर में पानी से भीगे जैसे धब्बे देखें जो ठंडे, नम मौसम में तेजी से बढ़ सकते हैं। पत्तियों के साथ तनों की भी जाँच करें। धब्बे फैल रहे हों तो उपचार चुनने से पहले स्थानीय कृषि अधिकारी से जल्द पहचान की पुष्टि कराएँ।"
+  },
+  {
+    "keywords": ["fungal disease", "fungal diseases", "fungus", "fungal infection", "फफूंद", "फफूँद", "फफूंदी", "कवक"],
+    "answer_en": "To reduce the risk of fungal leaf diseases, give plants enough space for air to circulate and direct irrigation toward the soil where practical. Check leaves regularly so you can identify new spots early. Have spreading symptoms identified before applying a fungicide.",
+    "answer_hi": "पत्तियों के फफूंद रोगों का जोखिम घटाने के लिए पौधों में पर्याप्त दूरी रखें ताकि हवा चल सके। जहाँ संभव हो, सिंचाई का पानी मिट्टी तक पहुँचाएँ। नए धब्बों के लिए पत्तियाँ नियमित देखें। फफूंदनाशक चुनने से पहले फैलते लक्षणों की पहचान कराएँ।"
+  },
+  {
+    "keywords": ["soil health", "soil quality", "soil fertility", "improve soil", "improve my soil", "improve the soil", "मिट्टी की सेहत", "मिट्टी की उर्वरता", "मिट्टी की गुणवत्ता", "मिट्टी सुधार"],
+    "answer_en": "Start with a soil test to see which nutrients your field needs. To protect the topsoil, keep it covered with suitable crop residues or a locally adapted cover crop. Rotate crops and reduce unnecessary tillage. Use the soil-test results to plan nutrient additions.",
+    "answer_hi": "मिट्टी की जाँच से शुरुआत करें ताकि पता चले कि खेत में किन पोषक तत्वों की ज़रूरत है। ऊपरी मिट्टी को बचाने के लिए उपयुक्त फसल अवशेष या स्थानीय आवरण फसल रखें। फसल चक्र अपनाएँ और अनावश्यक जुताई कम करें। जाँच के आधार पर खाद की योजना बनाएँ।"
+  },
+  {
+    "keywords": ["gray leaf spot", "grey leaf spot", "cercospora leaf spot", "ग्रे लीफ स्पॉट"],
+    "answer_en": "For suspected gray leaf spot on corn, check lower leaves for rectangular tan or gray spots bounded by leaf veins. Compare several plants and have the cause confirmed locally before treatment.",
+    "answer_hi": "मक्के में ग्रे लीफ स्पॉट का संदेह हो तो नीचे की पत्तियों पर नसों के बीच आयताकार भूरे या धूसर धब्बे देखें। कई पौधों की तुलना करें और उपचार से पहले स्थानीय स्तर पर कारण की पुष्टि कराएँ।"
   }
 ]
