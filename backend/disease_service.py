@@ -20,8 +20,16 @@ import threading
 from pathlib import Path
 
 import numpy as np
-import tensorflow as tf
 from PIL import Image, UnidentifiedImageError
+
+try:
+    from ai_edge_litert.interpreter import Interpreter
+except ModuleNotFoundError as exc:
+    if exc.name != "ai_edge_litert":
+        raise
+    import tensorflow as tf
+
+    Interpreter = tf.lite.Interpreter
 
 
 # ================= CONFIGURATION =================
@@ -52,7 +60,7 @@ if not all(isinstance(name, str) for name in CLASS_NAMES):
 
 print("Loading KrishiMitra AI TFLite model...")
 
-interpreter = tf.lite.Interpreter(
+interpreter = Interpreter(
     model_path=str(MODEL_PATH)
 )
 

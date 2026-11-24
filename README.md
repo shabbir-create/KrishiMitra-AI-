@@ -9,6 +9,12 @@ A Hindi-first agricultural assistant MVP with:
 
 **Safety:** This is an educational prototype, not a validated diagnostic tool. Model outputs can be wrong. Confirm disease diagnosis with a KVK/agriculture officer. No pesticide dose is hard-coded; always follow current locally approved product labels and expert guidance.
 
+## Deploy to Streamlit Community Cloud
+
+Select the branch containing the trained model and use `frontend/cloud_app.py` as the main file. The launcher serves the Streamlit UI and FastAPI together. Cloud installs the inference dependencies from `frontend/requirements.txt`.
+
+Leaf screening and the built-in FAQ work without credentials. To enable open-ended AI answers, add `OPENROUTER_API_KEY` in the app's Streamlit Secrets settings. You can also set `OPENROUTER_MODEL` there.
+
 ## Setup (Windows / VS Code)
 
 Use Python 3.10 or 3.11.

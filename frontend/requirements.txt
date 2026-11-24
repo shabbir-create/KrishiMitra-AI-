@@ -1,0 +1,9 @@
+streamlit==1.65.0
+fastapi>=0.115,<1
+python-multipart>=0.0.9
+ai-edge-litert==2.4.0
+numpy>=1.26
+pillow>=10
+requests>=2.32
+python-dotenv>=1
+edge-tts>=7,<8

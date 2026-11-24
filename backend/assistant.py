@@ -49,13 +49,8 @@ load_dotenv(dotenv_path=ENV_FILE)
 # OPENROUTER CONFIGURATION
 # ============================================================
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-
-
-OPENROUTER_MODEL = os.getenv(
-    "OPENROUTER_MODEL",
-    "openrouter/free"
-)
+def openrouter_model():
+    return os.getenv("OPENROUTER_MODEL", "openrouter/free")
 
 
 OPENROUTER_URL = (
@@ -287,7 +282,8 @@ def ask_openrouter(
     # CHECK API KEY
     # --------------------------------------------------------
 
-    if not OPENROUTER_API_KEY:
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
 
         raise RuntimeError(
             f"OPENROUTER_API_KEY not found. "
@@ -341,7 +337,7 @@ Farmer Question:
     headers = {
 
         "Authorization":
-            f"Bearer {OPENROUTER_API_KEY}",
+            f"Bearer {api_key}",
 
         "Content-Type":
             "application/json",
@@ -358,7 +354,7 @@ Farmer Question:
     payload = {
 
         "model":
-            OPENROUTER_MODEL,
+            openrouter_model(),
 
         "messages": [
 
@@ -558,7 +554,7 @@ def answer_question(
                 "openrouter",
 
             "model":
-                OPENROUTER_MODEL
+                openrouter_model()
 
         }
 
@@ -694,12 +690,12 @@ if __name__ == "__main__":
 
     print(
         "API key loaded:",
-        bool(OPENROUTER_API_KEY)
+        bool(os.getenv("OPENROUTER_API_KEY"))
     )
 
     print(
         "Model:",
-        OPENROUTER_MODEL
+        openrouter_model()
     )
 
 
