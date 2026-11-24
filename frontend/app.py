@@ -1035,6 +1035,37 @@ def generate_tts_audio(text, language):
 # DISEASE DETECTION
 # ============================================================
 
+def built_in_leaf_guidance(result, language):
+    """Explain the completed screening even if the external AI cannot answer."""
+    crop, disease = result["crop"], result["disease"]
+    hindi = language == "hi"
+    if result.get("status") == "uncertain":
+        return (
+            f"{crop} की पत्ती पर मॉडल का अनुमान अनिश्चित है। प्राकृतिक रोशनी में प्रभावित पत्ती और पास की दूसरी पत्ती देखें। उपचार चुनने से पहले कृषि विज्ञान केंद्र से पुष्टि कराएँ।"
+            if hindi else
+            f"The screening was uncertain for this {crop} leaf. Compare the affected area with nearby leaves in daylight and ask a local crop adviser to identify the cause before choosing treatment."
+        )
+    if result.get("healthy"):
+        return (
+            f"{crop} की इस तस्वीर में मॉडल को कोई पहचाना हुआ रोग नहीं दिखा। नई पत्तियों पर धब्बे या रंग बदलने जैसे लक्षणों की निगरानी करें।"
+            if hindi else
+            f"The model classified this {crop} leaf as healthy. Keep checking new leaves for spots or discoloration, especially if symptoms persist elsewhere on the plant."
+        )
+
+    if result.get("label") == "Corn___Cercospora_leaf_spot Gray_leaf_spot":
+        return (
+            "मक्के की पत्ती पर ग्रे लीफ स्पॉट की संभावना है। नीचे की पत्तियों पर नसों के बीच लंबे, आयताकार भूरे या धूसर धब्बे देखें। पास के पौधों से तुलना करें और उपचार से पहले स्थानीय कृषि विशेषज्ञ से पुष्टि कराएँ।"
+            if hindi else
+            "The corn leaf may have gray leaf spot. Check lower leaves for long, rectangular tan or gray spots between the veins. Compare several nearby plants and confirm the cause with a local crop adviser before treatment."
+        )
+    if hindi:
+        return (
+            f"फसल: {crop}। मॉडल का संभावित रोग: {disease}। पत्तियों के दोनों ओर लक्षण देखें और पास के पौधों से तुलना करें। उपचार से पहले तस्वीर और लक्षण स्थानीय कृषि विशेषज्ञ को दिखाएँ।"
+        )
+    advice = [result.get(field) for field in ("organic_treatment", "prevention")]
+    return "\n\n".join(filter(None, [f"The screening suggests {disease} on {crop}. Confirm the cause with a local crop adviser before treatment.", *advice]))
+
+
 def show_disease_detection():
 
     render(
@@ -1347,9 +1378,12 @@ def show_disease_detection():
                 f"{crop}|{disease}|{confidence:.2f}|{guidance_language_code}"
             )
 
-            guidance_text = st.session_state.disease_guidance.get(guidance_key)
+            # Older sessions stored unverified chat fallback text here.
+            saved = st.session_state.disease_guidance.get(guidance_key)
+            ai_answer = saved.get("answer") if isinstance(saved, dict) else None
+            guidance_text = ai_answer or built_in_leaf_guidance(result, guidance_language_code)
 
-            if not guidance_text:
+            if not ai_answer:
                 button_text = (
                     "🌱 Get Hindi Disease Guidance"
                     if guidance_language_code == "hi"
@@ -1437,23 +1471,17 @@ If the prediction is uncertain, make that clear.
                             )
                             assistant_response.raise_for_status()
                             assistant_data = assistant_response.json()
-                            guidance_text = str(
-                                assistant_data.get("answer", "")
-                            ).strip()
-
-                            if guidance_text:
-                                st.session_state.disease_guidance[guidance_key] = guidance_text
+                            answer = assistant_data.get("answer")
+                            if assistant_data.get("source") == "openrouter" and isinstance(answer, str) and answer.strip():
+                                st.session_state.disease_guidance[guidance_key] = {"answer": answer.strip()}
                                 st.rerun()
-                            else:
-                                st.warning("No disease guidance was returned.")
-
-                    except requests.RequestException as exc:
-                        st.error(
-                            "Could not generate disease guidance: "
-                            f"{request_error_message(exc)}"
-                        )
-
-            guidance_text = st.session_state.disease_guidance.get(guidance_key)
+                    except requests.RequestException:
+                        pass  # The completed screening still has built-in guidance.
+                    st.info(
+                        "अभी अंतर्निहित मार्गदर्शन दिखाया जा रहा है। विस्तृत AI उत्तर के लिए फिर प्रयास करें।"
+                        if guidance_language_code == "hi"
+                        else "Showing built-in guidance. You can retry for an expanded AI explanation."
+                    )
 
             if guidance_text:
                 st.markdown(
@@ -1461,6 +1489,8 @@ If the prediction is uncertain, make that clear.
                     if guidance_language_code == "hi"
                     else "### 📝 Disease Information"
                 )
+                if not ai_answer:
+                    st.caption("अंतर्निहित फसल मार्गदर्शन" if guidance_language_code == "hi" else "Built-in crop guidance")
                 render(format_assistant_response(guidance_text))
 
                 st.markdown(
@@ -1469,7 +1499,8 @@ If the prediction is uncertain, make that clear.
                     else "### 🔊 Listen to Guidance"
                 )
 
-                audio_path = st.session_state.disease_audio.get(guidance_key)
+                audio_key = (guidance_key, guidance_text)
+                audio_path = st.session_state.disease_audio.get(audio_key)
 
                 if not audio_path:
                     if st.button(
@@ -1488,12 +1519,12 @@ If the prediction is uncertain, make that clear.
                                     guidance_text,
                                     guidance_language_code
                                 )
-                                st.session_state.disease_audio[guidance_key] = audio_path
+                                st.session_state.disease_audio[audio_key] = audio_path
                                 st.rerun()
                         except Exception as exc:
                             st.error(f"Voice generation failed: {exc}")
 
-                audio_path = st.session_state.disease_audio.get(guidance_key)
+                audio_path = st.session_state.disease_audio.get(audio_key)
                 if audio_path and os.path.exists(audio_path):
                     st.audio(audio_path, format="audio/mp3")
 
