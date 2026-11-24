@@ -1,3 +1,4 @@
+# Cloud rebuild for the FastAPI worker update in ea631b1.
 streamlit==1.65.0
 fastapi>=0.115,<1
 python-multipart>=0.0.9
